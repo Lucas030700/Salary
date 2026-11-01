@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12231f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Emerson Planner">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Pay & Budget Planner</title>
+<style>
+:root{--bg:#f4f6f4;--card:#fff;--ink:#18231f;--muted:#68746e;--line:#e0e7e2;--green:#176b4d;--greenbg:#e7f4ed;--red:#b33b3b;--shadow:0 6px 22px #152d2010}
+*{box-sizing:border-box}html{overscroll-behavior-y:none}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#12231f;color:#fff;padding:22px 18px 20px;border-radius:0 0 24px 24px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#b8d9ca;font-weight:700}h1{font-size:23px;line-height:1.15;margin:7px 0 5px}header p{margin:0;color:#d0ddd6;font-size:13px}.pill{background:#254b3d;color:#dff5e8;border-radius:999px;padding:6px 9px;font-size:11px;white-space:nowrap}
+main{max-width:1120px;margin:auto;padding:calc(var(--sticky-height, 220px) + 14px) 12px 40px}.sticky-shell{position:fixed;top:0;left:0;right:0;width:100%;z-index:100;background:var(--bg);box-shadow:0 5px 16px #152d200c;padding-top:env(safe-area-inset-top, 0px);transform:translateZ(0);will-change:transform}.hero{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:-2px auto 0;max-width:1120px;padding:8px 12px;background:var(--bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.metric{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 10px;box-shadow:var(--shadow);min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}.metric small{display:block;color:var(--muted);font-size:11px}.metric strong{display:block;font-size:clamp(15px,3.5vw,21px);margin-top:4px;overflow-wrap:anywhere;text-align:center}.positive{color:var(--green)}.negative{color:var(--red)}
+.columns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}.panel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:16px;margin:0 0 3px}.sub{font-size:12px;color:var(--muted);margin:0 0 14px}.section{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.section h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}.field{margin:13px 0}.fieldhead{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px}.field label{font-size:13px;font-weight:600}.val{font-size:13px;font-weight:750;white-space:nowrap;font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--green);margin:4px 0;cursor:pointer}input[type=number]{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:#fff;color:var(--ink)}.ends{display:flex;justify-content:space-between;color:#8a948f;font-size:10px}.benefit{display:flex;gap:9px;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eef1ee}.benefit:last-child{border-bottom:0}.benefit b{font-size:13px;display:block}.benefit small{display:block;color:var(--muted);font-size:11px}.benefit strong{font-size:13px;white-space:nowrap}.switchrow{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:10px}.switchrow input{accent-color:var(--green)}.lineitem{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid #eef1ee}.lineitem span:first-child{color:var(--muted)}.lineitem b{font-variant-numeric:tabular-nums;text-align:right}.highlight{background:var(--greenbg);border-radius:13px;padding:13px;margin:10px 0}.highlight small{color:#416b59;display:block}.highlight strong{font-size:25px;color:var(--green);display:block;margin-top:3px;font-variant-numeric:tabular-nums}.callout{font-size:12px;color:var(--muted);background:#f7f9f7;border-radius:10px;padding:10px;margin-top:10px}.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{border:1px solid var(--line);background:white;border-radius:10px;padding:10px 12px;font-weight:650;color:var(--ink);cursor:pointer}button.primary{background:var(--green);color:white;border-color:var(--green)}.foot{font-size:11px;color:var(--muted);padding:16px 3px 0}.savehint{font-size:11px;color:var(--green);margin-top:8px}
+details>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;min-height:44px}
+details>summary::-webkit-details-marker{display:none}
+.summary-title{font-size:16px;font-weight:800}
+.summary-preview{font-size:11px;color:var(--muted);grid-column:1;grid-row:2}
+.chevron{grid-column:2;grid-row:1 / span 2;font-size:24px;color:var(--green);transition:transform .15s ease}
+details[open]>summary .chevron{transform:rotate(180deg)}
+.accordion-content{padding-top:12px}
+.accordion-panel{padding:7px 12px}
+.tabbar{display:flex;gap:7px;overflow-x:auto;padding:8px 12px 10px;max-width:1120px;margin:0 auto;background:var(--bg)}.tabbtn{flex:1;min-width:max-content;padding:10px 12px;font-size:12px}.tabbtn.active{background:var(--green);color:#fff;border-color:var(--green)}.tabpage{display:block}.tabpage.active{display:block}.widepanel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:var(--shadow);margin-top:12px}.compgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.compcard{border:1px solid var(--line);border-radius:13px;padding:13px;min-width:0}.formula{background:#f7f9f7;border-radius:10px;padding:11px;margin:8px 0;font-size:12px;overflow-wrap:anywhere}.formula b{display:block;margin-bottom:3px}.tag{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.tabpage h2{font-size:17px;margin:0 0 5px}.tabpage h3{font-size:13px;margin:14px 0 7px}#cutoffPlanner .compcard{margin-top:10px;background:#fbfcfb}#cutoffPlanner{scroll-margin-top:12px}#holidayWorkEntries .lineitem{align-items:center}#holidayWorkEntries button{padding:5px 8px;font-size:11px}#cutoffPlanner .highlight strong{font-size:23px}#cutoffPlanner .sub{margin-bottom:8px}#cutoffRecordsList .lineitem{align-items:flex-start}#cutoffRecordsList .lineitem span{min-width:0}#cutoffRecordsList .record-actions button{padding:5px 8px;font-size:11px}
+@media(max-width:760px){.compgrid{grid-template-columns:1fr}.tabbtn{font-size:11px;padding:10px 8px}}
+.accordion-panel details[open]>summary{padding-bottom:10px;border-bottom:1px solid var(--line)}
+@media(min-width:761px){.columns{align-items:start}.accordion-panel{min-height:80px}}
+@media(max-width:760px){.columns{grid-template-columns:1fr}.panel{padding:16px}.columns .panel{scroll-margin-top:10px}.hero{gap:5px;padding:5px 10px}.metric{padding:6px 5px;border-radius:10px}.metric small{font-size:10px}.metric strong{font-size:15px}header{padding:12px 16px 11px;border-radius:0 0 16px 16px}.eyebrow{font-size:10px}h1{font-size:20px;margin:4px 0 3px}header p{font-size:11px}.pill{padding:5px 7px;font-size:10px}.panel h2{font-size:17px}}
+@media(min-width:761px){header{padding-left:max(22px,calc((100% - 1080px)/2));padding-right:max(22px,calc((100% - 1080px)/2))}}
+
+.deduction-detail{border-bottom:1px solid #eef1ee;padding:2px 0}.deduction-detail>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px;font-size:13px}.deduction-detail>summary>span:first-child{color:var(--muted);flex:1}.deduction-detail>summary b{font-variant-numeric:tabular-nums}.deduction-detail .chevron{font-size:18px;flex:0 0 auto}.deduction-detail .formula{margin:6px 0 10px}.cutoff-pickers{margin-top:10px}.cutoff-pick{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:5px;cursor:pointer}.cutoff-pick strong{font-size:15px;color:var(--green)}.cutoff-pick small{font-size:11px;color:var(--muted)}#billPickerDialog{width:min(92vw,480px);max-height:80vh;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 20px 60px #0003}#billPickerDialog::backdrop{background:#0b1712a6}.picker-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.picker-head h2{margin:0 0 4px;font-size:17px}.picker-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #eef1ee;font-size:13px}.picker-row label{display:flex;gap:9px;align-items:center;flex:1}.picker-row input{accent-color:var(--green);width:18px;height:18px}.picker-row b{white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.target-bill-button{padding:6px 9px;color:var(--ink);font-weight:800;background:#fff;border-color:var(--line);white-space:nowrap}.detail-row td{padding:0 8px 9px;border-bottom:1px solid var(--line)}.detail-row details{background:transparent;border-radius:0;padding:8px 0}.detail-row summary{font-weight:700;color:var(--green);font-size:11px;cursor:pointer}.record-detail{padding:5px 0}.delete-row{text-align:right;padding:8px;border-bottom:1px solid var(--line)}.delete-row button{font-size:10px;padding:5px 8px;color:var(--red)}#monthlyHistoryTable{font-size:10px}#monthlyHistoryTable table{min-width:0!important;table-layout:fixed}#monthlyHistoryTable th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:9px}#monthlyHistoryTable td{padding:6px 4px;vertical-align:middle;border-bottom:1px solid var(--line);font-size:10px}#monthlyHistoryTable th:nth-child(1),#monthlyHistoryTable td:nth-child(1){width:23%}#monthlyHistoryTable th:nth-child(2),#monthlyHistoryTable td:nth-child(2){width:20%}#monthlyHistoryTable th:nth-child(3),#monthlyHistoryTable td:nth-child(3){width:29%}#monthlyHistoryTable th:nth-child(4),#monthlyHistoryTable td:nth-child(4){width:28%}.cutoff-open-button{padding:4px 6px;font-size:10px;color:var(--ink);background:#fff;border-color:var(--line);white-space:nowrap}.cutoff-row:active{background:transparent}.record-detail .field{margin:9px 0}.record-detail .sub{display:block;margin:5px 0 0;font-size:10px}
+.daily-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 9px;padding:8px;background:#f8faf8;border-radius:10px}.daily-editor .field{margin:3px 0}.daily-editor label{font-size:11px!important}.daily-editor input[type=date],.daily-editor select,.daily-editor input[type=number]{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px;font:12px inherit;background:#fff;color:var(--ink)}.daily-editor [data-work-controls]{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}.daily-editor [data-save-day]{grid-column:1/-1;padding:7px 10px;font-size:11px}.pay-computation{margin-top:10px;border-top:1px solid var(--line);padding-top:7px}.pay-computation summary{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}.pay-computation[open]{padding-bottom:5px}@media(max-width:520px){.daily-editor{grid-template-columns:1fr}.daily-editor [data-work-controls]{grid-template-columns:1fr 1fr}}
+.attendance-day{min-width:0;padding:6px 2px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px}
+.attendance-day small{font-size:8px;color:var(--muted);white-space:nowrap}
+.attendance-day.worked{border-color:#7ba88b;background:#edf7f0}.attendance-day.absent{border-color:#d49a9a;background:#fff0f0}
+.attendance-dialog{border:0;border-radius:14px;padding:16px;width:min(92vw,380px);box-shadow:0 18px 55px #0003}
+.attendance-dialog::backdrop{background:#17251fcc}
+.attendance-dialog .btnrow{display:flex;gap:8px;flex-wrap:wrap}.attendance-dialog button{font-size:12px;padding:8px 10px}
+@media(max-width:420px){.attendance-day{padding:5px 0}.attendance-day small{font-size:7px}}
+
+
+.tabpage{display:none!important}.tabpage.active{display:block!important}
+.sticky-shell{position:sticky!important;top:0!important}
+.tabbar{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-width:1100px;width:calc(100% - 28px);margin:10px auto 0;padding:0 0 10px}
+.tabbar .tabbtn{min-width:0;white-space:normal;line-height:1.2;font-size:12px;padding:10px 8px;border-radius:10px}
+@media(max-width:520px){.tabbar{gap:4px;width:calc(100% - 16px)}.tabbar .tabbtn{font-size:10px;padding:8px 4px}}
+
+#cloudAccountBar{position:static!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin:16px auto 12px;text-align:center;width:min(1100px,calc(100% - 28px));background:transparent!important;color:var(--muted)!important;box-shadow:none!important;border:0!important;border-radius:0!important;padding:8px 0!important;font-size:10px!important}
+#cloudAccountBar button{color:var(--ink)!important;border:1px solid var(--line)!important}
+#cloudSyncStatus{opacity:1!important}
+
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-cell{min-height:62px;border-radius:9px;padding:6px 3px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;border:1px solid transparent}
+.calendar-cell b{font-size:13px}.calendar-cell small{font-size:8px;line-height:1.1}
+.calendar-workday{background:#e9f2ff;border-color:#b7cdee;color:#294d79}
+.calendar-rest{background:#f0f1f2;border-color:#d9dcdf;color:#69717a}
+.calendar-regular{background:#ffebeb;border-color:#edb8b8;color:#963b3b}
+.calendar-special{background:#fff3d9;border-color:#efd39a;color:#8a6217}
+.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;font-size:10px}
+.calendar-legend span{display:flex;align-items:center;gap:5px}
+.legend-dot{width:11px;height:11px;border-radius:3px;display:inline-block;border:1px solid #0001}
+@media(max-width:520px){.calendar-cell{min-height:48px}.calendar-cell small{font-size:7px}}
+
+.remove-month{float:right;border:0;background:transparent;color:var(--red);font-size:16px;padding:0 5px;line-height:1}
+
+.estimate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.estimate-card{min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.estimate-card .tag{display:block;font-size:9px;line-height:1.25;white-space:normal}
+.estimate-card strong{display:block;font-size:17px;line-height:1.25;margin-top:5px;overflow-wrap:anywhere}
+@media(max-width:420px){.estimate-card{padding:7px}.estimate-card strong{font-size:15px}.estimate-card .tag{font-size:8px}}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}.section-head .sub{margin:0;flex:1}.small-action{padding:6px 10px!important;font-size:11px!important;white-space:nowrap;border-radius:8px!important}.expense-row{position:relative;border-bottom:1px solid var(--line);padding:7px 0 9px}.expense-row .fieldhead{gap:8px}.expense-actions{display:flex;gap:5px;align-items:center}.expense-actions button{font-size:10px;padding:4px 7px}.benefit-editor-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}.benefit-editor-row small{display:block;color:var(--muted);font-size:10px}.benefit-editor-row button{font-size:10px;padding:4px 7px}.tabbar{margin:0 auto!important;padding:5px 0 7px!important}.content-main{padding-top:3px!important;padding-bottom:76px!important}.tabpage>.widepanel{margin-top:3px!important}.sticky-shell{position:sticky!important;top:0!important;z-index:1000!important;background:var(--bg)!important;box-shadow:0 3px 10px #0000000a}.calendar-legend{margin:6px 0 9px!important}.attendance-calendar{margin-top:2px}
+#cloudAccountBar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9500!important;display:flex;gap:8px!important;justify-content:center!important;align-items:center!important;text-align:center!important;width:100%!important;margin:0!important;padding:8px 12px calc(8px + env(safe-area-inset-bottom))!important;background:var(--card)!important;border-top:1px solid var(--line)!important;box-shadow:0 -3px 14px #00000012!important;color:var(--muted)!important;border-radius:0!important}
+@media(max-width:520px){.tabbar .tabbtn{font-size:9px!important;padding:8px 3px!important}.content-main{padding-top:4px!important}.section-head{align-items:flex-start}}
+
+</style>
+</head>
+<body>
+<div class="sticky-shell">
+<header>
+ <div class="topline"><div><div class="eyebrow">Personal pay & budget simulator</div><h1 id="plannerTitle">Pay & Budget Planner</h1><p id="plannerPositionLabel">Senior Analyst · Sales & Operations Planning</p></div><span class="pill">Zone 4 · PHP</span></div>
+</header>
+ <section class="hero">
+  <div class="metric"><small>Estimated take-home</small><strong id="heroNet">₱0</strong></div>
+  <div class="metric"><small>Monthly expenses</small><strong id="heroExpenses">₱0</strong></div>
+  <div class="metric"><small>Money left</small><strong id="heroLeft">₱0</strong></div>
+ </section>
+
+<nav class="tabbar" aria-label="Planner sections">
+ <button class="tabbtn active" data-tab="plannerTab">Benefits · Expenses</button>
+ <button class="tabbtn" data-tab="recordsTab">Work & Pay Records</button>
+ <button class="tabbtn" data-tab="holidaysTab">Holiday & Pay Settings</button>
+</nav>
+</div>
+<main class="content-main">
+ <div class="tabpage active" id="plannerTab">
+ <section class="columns">
+  <article class="panel accordion-panel">
+   <details id="salaryDetails">
+    <summary><span class="summary-title">1 · Benefits</span><span class="summary-preview">Editable basic salary · Probi / Regular</span><span class="chevron" aria-hidden="true">⌄</span></summary>
+    <div class="accordion-content">
+   <div class="field"><label for="workPosition">Work position / role</label><input id="workPosition" type="text" value="Senior Analyst · Sales & Operations Planning" maxlength="90" placeholder="e.g. Engineer, Analyst, Supervisor"></div><p class="sub">Set your role, salary and employment status. Eligibility-based benefits update automatically.</p>
+   <div class="field"><div class="fieldhead"><label for="employmentStatus">Employment status</label><span class="val" id="statusVal">Probi</span></div>
+    <select id="employmentStatus" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit">
+     <option value="probi">Probi (Probationary)</option><option value="regular">Regular</option>
+    </select>
+   </div>
+   <div class="field"><div class="fieldhead"><label for="basicSalary">Monthly basic salary</label><span class="val" id="basicSalaryVal">₱48,000</span></div><input id="basicSalary" type="number" min="0" max="1000000" step="500" value="48000"></div>
+
+   <div class="section"><h3>Work schedule</h3><p class="sub">Set your normal duty hours. Night differential is calculated automatically for work or OT hours between 10 PM and 6 AM.</p><div class="grid2"><div class="field"><label for="dutyStart">Duty start</label><input id="dutyStart" type="time" value="13:00"></div><div class="field"><label for="dutyEnd">Duty end</label><input id="dutyEnd" type="time" value="22:00"></div></div></div>
+   <div class="benefit"><div><b>Rice allowance</b><small>Monthly equivalent used in planner</small></div><strong>₱1,167</strong></div>
+   <div class="benefit"><div><b>Mid-year pay</b><small>50% of basic, shown separately</small></div><strong>₱24,000</strong></div>
+   <div class="benefit"><div><b>Clothing allowance</b><small>Annual, excluded from monthly cash flow</small></div><strong>₱3,000/yr</strong></div>
+   <div class="benefit"><div><b>OT travel + meal allowance</b><small>₱350 travel + ₱60 meal per approved OT day, assuming at least 3 hours of OT</small></div><strong>₱410/day</strong></div>
+   <div class="section"><div class="section-head"><h3>My additional benefits</h3><button type="button" class="small-action" id="addBenefit">＋ Add</button></div><p class="sub">Add, edit or remove personal/company benefits. These are displayed separately and are not included in the payroll estimate unless already built into the calculator.</p><div id="customBenefits"></div></div>
+   <p class="callout">Overtime and night differential are recorded by date inside each cutoff under Work & Pay Records.</p>
+   <div class="benefit" id="regularBenefit"><div><b>Regularization transport benefit</b><small>Available only under Regular status</small></div><strong>₱0/month</strong></div>
+   <p class="callout" id="statusNote">Probi selected: regularization transport benefit is excluded.</p>
+   <div class="section"><h3>Estimated payroll deductions</h3>
+    <details class="deduction-detail"><summary><span>SSS employee contribution</span><b id="sss">₱1,750</b><span class="chevron">⌄</span></summary><div class="formula"><b>How SSS is estimated</b><span id="sssFormula">5% × ₱35,000 maximum Monthly Salary Credit (MSC) = ₱1,750 employee share. The current SSS schedule uses a 15% total contribution rate, split between employee and employer. The ₱35,000 MSC cap applies from 2025.</span></div></details>
+    <details class="deduction-detail"><summary><span>PhilHealth employee contribution</span><b id="philhealth">₱1,200</b><span class="chevron">⌄</span></summary><div class="formula"><b>How PhilHealth is estimated</b>₱48,000 × 5% total premium rate ÷ 2 = ₱1,200 employee share, assuming ₱48,000 is the applicable monthly basic salary and no other adjustment applies.</div></details>
+    <details class="deduction-detail"><summary><span>Pag-IBIG employee contribution</span><b id="pagibig">₱200</b><span class="chevron">⌄</span></summary><div class="formula"><b>How Pag-IBIG is estimated</b>2% × ₱10,000 maximum Fund Salary = ₱200 employee share for monthly compensation above ₱1,500.</div></details>
+    <details class="deduction-detail"><summary><span>Withholding tax estimate</span><b id="tax">₱0</b><span class="chevron">⌄</span></summary><div class="formula"><b>Tax computation</b>Annualize estimated monthly taxable compensation, apply Philippine individual income-tax brackets effective 2023 onward, then divide annual tax by 12. For ₱400,000–₱800,000 annual taxable income: ₱22,500 + 20% of the amount above ₱400,000. Other brackets are handled automatically.</div><div class="lineitem"><span>Estimated monthly taxable compensation</span><b id="calcTaxable">₱0</b></div><div class="lineitem"><span>Estimated annual taxable compensation</span><b id="calcAnnualTaxable">₱0</b></div><div class="lineitem"><span>Estimated annual income tax</span><b id="calcAnnualTax">₱0</b></div><div class="formula"><b>Taxable compensation assumption</b>Basic salary + estimated OT + night differential + OT transport/meal + regularization transport − SSS − PhilHealth − Pag-IBIG. Rice allowance is excluded from this simplified taxable base. Actual withholding may differ depending on allowance classification and year-to-date reconciliation.</div></details>
+    <div class="lineitem"><span><b>Total deductions</b></span><b id="deductions">₱0</b></div>
+    <p class="callout">These are estimates, not confirmed payroll deductions. Employer shares are not deducted from your pay. Check your first payslip or ask Emerson payroll to confirm applicable contribution tables and tax treatment.</p>
+   </div>
+   <p class="callout">Payroll estimates only. Confirm contribution tables, tax treatment, OT divisor, and actual benefit eligibility with Emerson HR/payroll.</p>
+    </div>
+   </details>
+  </article>
+  <article class="panel accordion-panel">
+   <details id="expensesDetails">
+    <summary><span class="summary-title">2 · Monthly expenses</span><span class="summary-preview">Adjust your priority-based budget</span><span class="chevron" aria-hidden="true">⌄</span></summary>
+    <div class="accordion-content">
+   <div class="section-head"><p class="sub">Ordered by your chosen budgeting priorities. Change each slider or edit the expense names.</p><button type="button" class="small-action" id="addExpense">＋ Add</button></div>
+   <div id="expenses"></div>
+   <div class="section"><div class="lineitem"><span><b>Total monthly expenses</b></span><b id="totalExpenses">₱0</b></div></div>
+   <p class="callout">Rent/house payment and utilities are separate. Avoid double-counting if utilities are included in rent.</p>
+    </div>
+   </details>
+  </article>
+  <article class="panel accordion-panel" id="monthlySummaryPanel" hidden>
+   <details id="summaryDetails">
+    <summary><span class="summary-title">3 · Monthly summary</span><span class="summary-preview">Take-home pay · Expenses · Money left</span><span class="chevron" aria-hidden="true">⌄</span></summary>
+    <div class="accordion-content">
+   <p class="sub">The numbers recalculate as you adjust the sliders.</p>
+   <div class="highlight"><small>Estimated take-home pay</small><strong id="net">₱0</strong></div>
+   <div class="lineitem"><span>Basic salary</span><b id="basicLine">₱48,000</b></div>
+   <div class="lineitem"><span>Rice allowance</span><b>₱1,167</b></div>
+   <div class="lineitem"><span>Estimated OT pay</span><b id="otPay">₱0</b></div>
+   <div class="lineitem"><span>Night differential</span><b id="nightPay">₱0</b></div>
+   <div class="lineitem"><span>OT travel allowance (₱350/day)</span><b id="otTravel">₱0</b></div>
+   <div class="lineitem"><span>OT meal allowance (₱60/day)</span><b id="otMeal">₱0</b></div>
+   <div class="lineitem"><span>Total OT travel + meal</span><b id="otTransport">₱0</b></div>
+   <div class="lineitem"><span>Regularization transport</span><b id="regPay">₱0</b></div>
+   <div class="lineitem"><span>Estimated gross</span><b id="gross">₱0</b></div>
+   <div class="lineitem"><span>Total deductions</span><b id="deductSummary">₱0</b></div>
+   <div class="highlight"><small>Money left after expenses</small><strong id="left">₱0</strong><small id="leftPct"></small></div>
+   <div class="btnrow"><button class="primary" id="saveBtn" type="button" style="display:none">Save this budget</button><button id="resetBtn">Reset baseline</button></div>
+   <p class="savehint" id="saveStatus">Your settings are saved automatically and synced to your account.</p>
+    </div>
+   </details>
+  </article>
+ </section>
+ </div>
+ <section class="tabpage" id="recordsTab">
+  <article class="widepanel">
+   <h2>Monthly work & pay history</h2>
+   <p class="sub">Use ＋ Add month to add a month and × to remove one. Tap a cutoff row to expand attendance and pay details. Tap the Bills amount to assign bills to that cutoff.</p>
+   <div class="btnrow"><button class="primary" id="addHistoryMonth" type="button">＋ Add month</button></div>
+   <p class="savehint" id="monthlyHistoryStatus" aria-live="polite">Showing the current month and four months ahead.</p>
+   <div style="overflow-x:auto" id="monthlyHistoryTable"><p class="callout">No monthly records saved yet. Save the current plan to start your history.</p></div>
+   <p class="callout">Tap a target amount to edit the bill assignment for that month and cutoff. A bill can belong to only one cutoff in the same month. Saved records are stored automatically and synced to your account.</p>
+   <dialog id="billPickerDialog"><div class="picker-head"><div><h2 id="billPickerTitle">Select bills</h2><p class="sub" id="billPickerSubtitle">Check the bills to assign to this payday.</p></div><button type="button" id="closeBillPicker" aria-label="Close">✕</button></div><div id="billPickerList"></div><div class="btnrow"><button class="primary" type="button" id="doneBillPicker">Done</button></div></dialog>
+  </article>
+ </section>
+ <section class="tabpage" id="holidaysTab">
+  <article class="widepanel">
+   <h2>Holiday & Pay Settings</h2><p class="sub">Choose a month to review holidays, scheduled workdays and estimated pay scenarios. Verify official holiday proclamations and actual attendance.</p><div class="field"><label for="payCalendarMonth">Calendar month</label><input type="month" id="payCalendarMonth" value="2026-11"></div><div id="payCalendar" class="compgrid"></div><div id="payHolidayInfo" class="holiday-info" hidden></div><div class="estimate-grid"><div class="estimate-card"><span class="tag">Minimum · No OT</span><strong id="minimumPay">₱0</strong></div><div class="estimate-card"><span class="tag">Maximum · 3h OT × 3 days/week</span><strong id="maximumPay">₱0</strong></div></div>
+   <h3>Automatic holiday integration</h3>
+   <p class="sub">Set your normal workdays once. Holiday premiums are estimated automatically for each saved month when a holiday falls on a scheduled workday.</p>
+   <div class="field"><label>My normal working days</label><div class="weekday-grid" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px;font-size:12px">
+    <label><input class="workday" type="checkbox" value="1" checked> Mon</label><label><input class="workday" type="checkbox" value="2" checked> Tue</label><label><input class="workday" type="checkbox" value="3" checked> Wed</label><label><input class="workday" type="checkbox" value="4" checked> Thu</label><label><input class="workday" type="checkbox" value="5" checked> Fri</label><label><input class="workday" type="checkbox" value="6"> Sat</label><label><input class="workday" type="checkbox" value="0"> Sun</label>
+   </div></div>
+   <div class="compgrid"><div class="field"><label for="holidayHoursPerDay">Regular hours per scheduled day</label><input id="holidayHoursPerDay" type="number" min="1" max="12" step="0.5" value="8"></div><div class="field"><label for="holidayNightPerDay">Night differential hours per holiday</label><input id="holidayNightPerDay" type="number" min="0" max="8" step="0.5" value="0"></div></div>
+   <label class="switchrow"><input id="assumeHolidayWorked" type="checkbox" checked> Assume I work when a holiday falls on my scheduled workday</label>
+   <div class="highlight"><small>Holiday premiums</small><strong>Automatic per month</strong><small>Included in the corresponding 15th or month-end cutoff calculation.</small></div>
+   <div class="formula"><b>Multipliers used</b>Regular holiday: 200% for first 8 hours; 260% for overtime beyond 8 hours. Regular holiday on rest day: 260% first 8 hours; 338% for overtime. Special non-working day: 130% first 8 hours; 169% for overtime. Special non-working day on rest day: 150% first 8 hours; 195% for overtime. Night differential adds 10% of the applicable hourly rate for hours from 10 PM to 6 AM. Special working days have no statutory holiday premium. For monthly-paid employees, this calculator adds the premium portion on top of the ordinary monthly salary, not the ordinary day's base pay again.</div>
+   <p class="callout">Holiday pay is estimated only when the automatic holiday-work assumption is enabled and a holiday falls on one of your selected scheduled workdays. Actual attendance, rest-day status, special proclamations and company payroll rules can change the result.</p>
+   <p class="callout">Unpaid absences are recorded separately inside each cutoff's expanded details. Paid leave should not be entered as an unpaid absence.</p>
+  </article>
+ </section>
+ <p class="foot">Planning tool only, not an official payslip. Estimates use your editable basic salary, ₱1,167 rice allowance, simplified statutory deductions, 10% night differential for eligible hours, and 1.25× hourly rate for OT. Tax/benefit treatment can vary. Saved settings stay on this browser/device.</p>
+</main>
+<script>
+const fmt=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+const basicPay=()=>Math.max(0,Number(document.getElementById('basicSalary')?.value)||48000);
+const expenseDefs=[
+ ['investment','1. Investment',5000,20000,500],
+ ['jowa','2. Jowa allowance',3000,10000,500],
+ ['house','3. House payment / rent',5000,15000,500],
+ ['mama','4. Mama / family allowance',10000,15000,500],
+ ['utilities','5. Utilities',1500,5000,250],
+ ['food','6. Food & groceries',6000,15000,500],
+ ['transport','7. Transport',1500,10000,250],
+ ['wifi','8. Wi-Fi',1000,3000,100],
+ ['personal','9. Personal expenses',2000,10000,250],
+ ['other','10. Other expenses',1000,10000,250]
+];
+let customExpenseDefs=[];try{customExpenseDefs=JSON.parse(localStorage.getItem('payPlannerCustomExpenseDefs')||'[]')||[]}catch(e){customExpenseDefs=[]}customExpenseDefs.forEach(x=>{if(Array.isArray(x)&&x.length===5)expenseDefs.push(x)});
+const expenseRoot=document.getElementById('expenses');
+function renderExpenseRows(){expenseRoot.innerHTML=expenseDefs.map(([id,label,def,max,step])=>`<div class="expense-row" data-expense-row="${id}"><div class="fieldhead"><label for="${id}">${label.replace(/^\d+\. /,'')}</label><span class="val" id="${id}Val">${fmt(def)}</span><div class="expense-actions"><button type="button" data-edit-expense="${id}">Edit</button><button type="button" data-delete-expense="${id}">−</button></div></div><input id="${id}" type="range" min="0" max="${max}" step="${step}" value="${def}"><div class="ends"><span>₱0</span><span>${fmt(max)}</span></div><input type="hidden" id="${id}Cutoff" value="eom"></div>`).join('');}
+renderExpenseRows();
+const ids=['employmentStatus','basicSalary','workPosition','dutyStart','dutyEnd',...expenseDefs.map(x=>x[0])];
+const get=id=>document.getElementById(id);
+function taxForAnnual(annual){
+ if(annual<=250000)return 0;
+ if(annual<=400000)return (annual-250000)*.15;
+ if(annual<=800000)return 22500+(annual-400000)*.20;
+ if(annual<=2000000)return 102500+(annual-800000)*.25;
+ if(annual<=8000000)return 402500+(annual-2000000)*.30;
+ return 2202500+(annual-8000000)*.35;
+}
+function estimateScenario(isRegular,otPay,nightPay,otTransport){
+ const basic=basicPay(),rice=1167,sss=1750,philhealth=1200,pagibig=200,regPay=isRegular?2000:0;
+ const holidayTotals=holidayPayByCutoff(); const holidayPremium=holidayTotals.total;
+ const gross=basic+rice+otPay+nightPay+otTransport+regPay+holidayPremium;
+ const taxable=Math.max(0,basic+otPay+nightPay+otTransport+regPay+holidayPremium-sss-philhealth-pagibig);
+ const tax=taxForAnnual(taxable*12)/12;
+ return {net:gross-sss-philhealth-pagibig-tax};
+}
+function estimatedNetForOt(otHours, nightHours, otDays, isRegular){
+ const basic=basicPay(),rice=1167,hourly=basic/(22*8),otPay=otHours*52/12*hourly*1.25;
+ const nightPay=nightHours*hourly*.10,otTransport=otDays*410,regPay=isRegular?2000:0;
+ const sss=Math.min(1750,basic*.05),philhealth=basic*.025,pagibig=basic>1500?200:basic*.02;
+ const gross=basic+rice+otPay+nightPay+otTransport+regPay;
+ const taxable=Math.max(0,basic+otPay+nightPay+otTransport+regPay-sss-philhealth-pagibig);
+ const tax=taxForAnnual(taxable*12)/12;
+ return gross-sss-philhealth-pagibig-tax;
+}
+function recommendOtForTarget(target,nightHours,otDays,isRegular){
+ if(target<=0)return {hours:0,pay:estimatedNetForOt(0,nightHours,otDays,isRegular)/2,possible:true};
+ if(estimatedNetForOt(0,nightHours,otDays,isRegular)/2>=target)return {hours:0,pay:estimatedNetForOt(0,nightHours,otDays,isRegular)/2,possible:true};
+ let lo=0,hi=20;
+ if(estimatedNetForOt(hi,nightHours,otDays,isRegular)/2<target)return {hours:20,pay:estimatedNetForOt(20,nightHours,otDays,isRegular)/2,possible:false};
+ for(let i=0;i<32;i++){const mid=(lo+hi)/2;if(estimatedNetForOt(mid,nightHours,otDays,isRegular)/2>=target)hi=mid;else lo=mid;}
+ const hours=Math.ceil(hi*2)/2;
+ return {hours,pay:estimatedNetForOt(hours,nightHours,otDays,isRegular)/2,possible:true};
+}
+function calculate(){
+ const basic=basicPay(),rice=1167,hourly=basic/(22*8),isRegular=get('employmentStatus').value==='regular';
+ const regPay=isRegular?2000:0,holiday=holidayPayByCutoff().total||0;
+ const sss=Math.min(1750,basic*.05),philhealth=basic*.025,pagibig=basic>1500?200:basic*.02;
+ const gross=basic+rice+regPay+holiday;
+ const taxable=Math.max(0,basic+regPay+holiday-sss-philhealth-pagibig);
+ const annualTax=taxForAnnual(taxable*12),tax=annualTax/12,deductions=sss+philhealth+pagibig+tax;
+ const net=gross-deductions,expenses=expenseDefs.reduce((sum,[id])=>sum+(Number(get(id).value)||0),0),left=net-expenses;
+ const set=(id,value)=>{const el=get(id);if(el)el.textContent=value;};
+ set('statusVal',isRegular?'Regular':'Probi');set('basicSalaryVal',fmt(basic));set('plannerPositionLabel',get('workPosition')?.value||'Your position');
+ expenseDefs.forEach(([id])=>set(id+'Val',fmt(Number(get(id).value)||0)));
+ set('sss',fmt(sss));set('philhealth',fmt(philhealth));set('pagibig',fmt(pagibig));set('tax',fmt(tax));set('calcTaxable',fmt(taxable));set('calcAnnualTaxable',fmt(taxable*12));set('calcAnnualTax',fmt(annualTax));set('deductions',fmt(deductions));
+ set('otPay',fmt(0));set('nightPay',fmt(0));set('otTravel',fmt(0));set('otMeal',fmt(0));set('otTransport',fmt(0));set('regPay',fmt(regPay));set('gross',fmt(gross));set('deductSummary',fmt(deductions));set('net',fmt(net));set('basicLine',fmt(basic));
+ set('heroNet',fmt(net));set('totalExpenses',fmt(expenses));set('heroExpenses',fmt(expenses));set('left',fmt(left));set('heroLeft',fmt(left));set('leftPct',net>0?((left/net)*100).toFixed(1)+'% of take-home remaining':'');
+ const benefit=get('regularBenefit');if(benefit)benefit.querySelector('strong').textContent=fmt(regPay)+'/month';
+ const note=get('statusNote');if(note)note.textContent=isRegular?'Regular selected: estimated ₱2,000 monthly transport benefit included. Confirm eligibility with HR.':'Probi selected: regularization transport benefit is excluded.';
+ const hero=get('heroLeft');if(hero){hero.classList.toggle('positive',left>=0);hero.classList.toggle('negative',left<0);}
+ if(window.__plannerAutoSaveTimer)clearTimeout(window.__plannerAutoSaveTimer);
+ window.__plannerAutoSaveTimer=setTimeout(()=>{try{if(window.__emersonApplyingRemote)return;localStorage.setItem('emersonSalaryPlanner',JSON.stringify(state()));if(window.__emersonQueueCloudSync)window.__emersonQueueCloudSync();const status=get('saveStatus');if(status)status.textContent='Automatically saved on this device and syncing to your account…';}catch(e){console.warn('Planner autosave failed',e);}},350);
+ return {net,expenses,left,gross,deductions,otPay:0,nightPay:0,otTransport:0,holiday};
+}
+// Interactive bill assignment: each expense belongs to exactly one payday.
+let billPickerCutoff='15';
+function renderBillPicker(which,record=null){
+ billPickerCutoff=which;const isFirst=which==='15';
+ get('billPickerTitle').textContent=isFirst?'Choose bills for First cutoff':'Choose bills for Second cutoff';
+ get('billPickerSubtitle').textContent='Select the bills assigned to this cutoff. A bill selected here will be removed from the other cutoff for this month.';
+ const selectedIds=record?(record[isFirst?'first':'second']?.items||[]).map(x=>x.id):null;
+ const savedAmounts={};if(record)['first','second'].forEach(k=>(record[k]?.items||[]).forEach(it=>savedAmounts[it.id]=it.amount));
+ get('billPickerList').innerHTML=expenseDefs.map(([id,label])=>{const amount=record?((savedAmounts[id]??(Number(get(id).value)||0))):(Number(get(id).value)||0);const checked=record?selectedIds.includes(id):(get(id+'Cutoff').value==='15')===isFirst;return `<div class="picker-row"><label><input type="checkbox" data-picker-expense="${id}" ${checked?'checked':''}><span>${label.replace(/^\d+\. /,'')}</span></label><b>${fmt(amount)}</b></div>`}).join('');
+ get('billPickerList').querySelectorAll('[data-picker-expense]').forEach(ch=>ch.addEventListener('change',()=>{
+  const id=ch.dataset.pickerExpense;
+  if(record){record.first.items=record.first.items||[];record.second.items=record.second.items||[];const first=record.first.items,second=record.second.items;const source=ch.checked?(isFirst?second:first):(isFirst?first:second);const target=ch.checked?(isFirst?first:second):(isFirst?second:first);const def=expenseDefs.find(x=>x[0]===id),amount=record.first.items.concat(record.second.items).find(x=>x.id===id)?.amount??(Number(get(id).value)||0);const idx=source.findIndex(x=>x.id===id);if(idx>=0)source.splice(idx,1);if(ch.checked&&!target.some(x=>x.id===id))target.push({id,label:def[1].replace(/^\d+\. /,''),amount});recalcSavedRecord(record);saveMonthlyHistoryData();renderMonthlyHistory();
+  }else{get(id+'Cutoff').value=ch.checked?(isFirst?'15':'eom'):(isFirst?'eom':'15');calculate();renderBillPicker(which);}
+ }));
+ get('billPickerDialog').showModal();
+}
+get('closeBillPicker').addEventListener('click',()=>{get('billPickerDialog').close();activeRecordEdit=null;});
+get('doneBillPicker').addEventListener('click',()=>{get('billPickerDialog').close();if(activeRecordEdit){const r=monthlyHistory.find(x=>x.month===activeRecordEdit.month);if(r){recalcSavedRecord(r);saveMonthlyHistoryData();renderMonthlyHistory();get('monthlyHistoryStatus').textContent=monthLabel(r.month)+' bill assignments updated.';}activeRecordEdit=null;}});
+
+// Monthly history: auto-created rolling months with expandable cutoff rows.
+let monthlyHistory=[];
+let activeRecordEdit=null;
+let expandedCutoffKey=null;
+const DAILY_ABSENCE_DIVISOR=22; // Editable planning assumption; actual payroll divisor may differ.
+function currentCutoffPlan(which,month){const is15=which==='15';let bills=0,items=[];expenseDefs.forEach(([id,label])=>{if((get(id+'Cutoff')?.value==='15')===is15){const amount=Number(get(id).value)||0;bills+=amount;items.push({id,label:label.replace(/^\d+\. /,''),amount});}});const holiday=holidayPayByCutoff(month)[is15?'p15':'eom'];return {bills,items,holiday,absenceDates:[],absenceDays:0,absenceDeduction:0,otEntries:[],otPay:0,paySuggested:basicPay()/2+1167/2-holiday*0,balance:basicPay()/2+1167/2-bills,target:bills};}
+
+function monthLabel(m){const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString('en-PH',{month:'long',year:'numeric'});}
+function cutoffPeriod(month,which){
+ const [y,m]=month.split('-').map(Number);
+ if(which==='first'){
+  const prev=new Date(y,m-2,1),py=prev.getFullYear(),pm=prev.getMonth()+1,last=new Date(y,m-1,0).getDate();
+  return {min:`${py}-${String(pm).padStart(2,'0')}-16`,max:`${py}-${String(pm).padStart(2,'0')}-${last}`};
+ }
+ return {min:`${month}-01`,max:`${month}-15`};
+}
+function timeMinutes(value,fallback){const [h,m]=String(value||fallback).split(':').map(Number);return (h||0)*60+(m||0);}
+function nightOverlap(start,end){
+ let total=0;for(let t=start;t<end;t++){const minute=((t%1440)+1440)%1440;if(minute>=22*60||minute<6*60)total++;}
+ return total/60;
+}
+function scheduledNightHours(){
+ let start=timeMinutes(get('dutyStart')?.value,'13:00'),end=timeMinutes(get('dutyEnd')?.value,'22:00');if(end<=start)end+=1440;
+ return Math.round(nightOverlap(start,end)*2)/2;
+}
+function nightHoursForOt(hours){
+ const end=timeMinutes(get('dutyEnd')?.value,'22:00'),duration=Math.max(0,Number(hours)||0)*60;
+ return Math.round(nightOverlap(end,end+duration)*2)/2;
+}
+function updateNightPreview(dialog,hours){
+ const n=nightHoursForOt(hours),el=dialog.querySelector('[data-dialog-nd-preview]');if(el)el.textContent='Night differential: '+n+' hours (automatic based on duty schedule)';
+}
+function detailMarkup(record,which){
+ const x=record[which],items=x.items||[],ot=x.otEntries||[],abs=x.absenceDates||[],period=cutoffPeriod(record.month,which),key=record.month+'|'+which;
+ return `<div class="record-detail"><h3>Daily attendance</h3><p class="sub">Choose a date from ${period.min} to ${period.max}. Select whether you worked. OT and night differential appear only for days marked Present.</p>
+ <div class="calendar-legend"><span><i class="legend-dot calendar-workday"></i> Workday</span><span><i class="legend-dot calendar-rest"></i> Rest day</span><span><i class="legend-dot calendar-regular"></i> Regular holiday</span><span><i class="legend-dot calendar-special"></i> Special holiday</span></div>
+ <div class="attendance-calendar" data-attendance-calendar="${key}" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+ ${['S','M','T','W','T','F','S'].map(d=>`<b style="font-size:10px;text-align:center">${d}</b>`).join('')}
+ ${(()=>{let out='';const [yy,mo,dd]=period.min.split('-').map(Number),[ey,em,ed]=period.max.split('-').map(Number);const first=new Date(yy,mo-1,dd).getDay();for(let i=0;i<first;i++)out+='<span></span>';for(let dt=new Date(yy,mo-1,dd);dt<=new Date(ey,em-1,ed);dt.setDate(dt.getDate()+1)){const date=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');const isAbsent=abs.includes(date),entry=ot.find(e=>e.date===date),holiday=holidayForDate(date),dow=dt.getDay(),isWork=[...document.querySelectorAll('.workday:checked')].some(w=>Number(w.value)===dow),shade=holiday?(holiday[2]==='Regular holiday'?'calendar-regular':'calendar-special'):isWork?'calendar-workday':'calendar-rest';out+=`<button type="button" class="attendance-day ${shade} ${isAbsent?'absent':entry?'worked':''}" data-day-pick="${key}|${date}" ${holiday?`data-holiday-detail="${date}"`:''}><b>${dt.getDate()}</b><small>${holiday?(holiday[2].includes('Regular')?'Regular holiday':'Special holiday'):isAbsent?'Absent':entry?entry.hours+'h OT':isWork?'Workday':'Rest day'}</small></button>`;}return out;})()}
+ </div><div class="holiday-info" data-record-holiday-info hidden></div>
+ <dialog class="attendance-dialog" data-day-dialog="${key}">
+  <div class="picker-head"><div><h3 data-dialog-date>Attendance</h3><p class="sub">Did you report to work on this date?</p></div><button type="button" data-dialog-close aria-label="Close">✕</button></div>
+  <div class="field"><label>Did you work?</label><div class="btnrow"><button type="button" data-work-yes>Yes, I worked</button><button type="button" data-work-no>No, absent</button></div></div>
+  <div data-dialog-ot hidden>
+   <div class="field"><div class="fieldhead"><label>Overtime hours</label><span class="val" data-dialog-ot-label>0 hours</span></div><input type="range" min="0" max="5" step="0.5" value="0" data-dialog-ot-slider></div>
+   <p class="sub" data-dialog-nd-preview>Night differential: 0 hours (automatic based on duty schedule)</p>
+  </div>
+  <div class="btnrow"><button type="button" class="primary" data-dialog-save>OK</button></div>
+ </dialog>
+ <details class="pay-computation"><summary>Paycheck computation <span>⌄</span></summary><div class="lineitem"><span>Absence deduction</span><b>${fmt(x.absenceDeduction||0)}</b></div><div class="lineitem"><span>OT pay + applicable allowances</span><b>${fmt(x.otPay||0)}</b></div><div class="lineitem"><span>Estimated cutoff take-home</span><b>${fmt(x.paySuggested||0)}</b></div><div class="lineitem"><span>Target bills</span><b>${fmt(x.bills||0)}</b></div><div class="lineitem"><span>Money left / shortfall</span><b>${(x.balance||0)<0?'Short by ':'Left '}${fmt(Math.abs(x.balance||0))}</b></div></details></div>`;
+}
+function recalcSavedRecord(record){['first','second'].forEach(k=>{const x=record[k];x.items=x.items||[];x.otEntries=x.otEntries||[];x.absenceDates=x.absenceDates||[];x.bills=x.items.reduce((a,b)=>a+(Number(b.amount)||0),0);x.absenceDays=x.absenceDates.length;x.absenceDeduction=x.absenceDays*(basicPay()/DAILY_ABSENCE_DIVISOR);x.target=x.bills+x.absenceDeduction;const hourly=basicPay()/(22*8);x.otPay=x.otEntries.reduce((sum,e)=>{const h=Number(e.hours)||0;const night=nightHoursForOt(h),shiftNight=Number(e.shiftNight??scheduledNightHours());e.night=night;e.shiftNight=shiftNight;return sum+h*hourly*1.25+(night+shiftNight)*hourly*.10+(h>=3?410:0);},0);const holiday=Number(x.holiday)||holidayPayByCutoff(record.month)[k==='first'?'p15':'eom'];x.holiday=holiday;const halfBasic=basicPay()/2;const halfRice=1167/2;const halfDeductions=(Math.min(1750,basicPay()*.05)+basicPay()*.025+(basicPay()>1500?200:basicPay()*.02))/2;const taxable=Math.max(0,halfBasic+halfRice+x.otPay+holiday-halfDeductions);const tax=taxForAnnual(taxable*12)/12;const base=halfBasic+halfRice+x.otPay+holiday-halfDeductions-tax;x.paySuggested=Math.max(0,base-x.absenceDeduction);x.balance=x.paySuggested-x.bills;});}
+
+function renderMonthlyHistory(){
+ const root=get('monthlyHistoryTable');if(!root)return;
+ const sorted=[...monthlyHistory].sort((a,b)=>a.month.localeCompare(b.month));
+ if(!sorted.length){root.innerHTML='<p class="callout">No months available. Use ＋ Add month to create one.</p>';return;}
+ const rows=sorted.map(r=>{
+  const row=(which,label)=>{const x=r[which]||{bills:0,otTotalHours:0,possible:true};const cutoffLabel=which==='first'?'1st':'2nd';const key=r.month+'|'+which;const expanded=expandedCutoffKey===key;return `<tr class="cutoff-row" data-open-cutoff="${key}" style="cursor:pointer"><td><b>${new Date(Number(r.month.slice(0,4)),Number(r.month.slice(5,7))-1,1).toLocaleDateString("en-US",{month:"short",year:"numeric"})}</b></td><td><button class="cutoff-open-button" type="button" data-toggle-cutoff="${key}">${cutoffLabel} ${expanded?'▴':'▾'}</button></td><td><button class="target-bill-button" type="button" data-edit-bills="${r.month}|${which}">${fmt(x.bills||0)} <span>▾</span></button></td><td>${x.possible===false?'40+ total h':(x.otTotalHours?x.otTotalHours+' total h':'None')}${which==='first'?` <button type="button" class="remove-month" data-remove-month="${r.month}" aria-label="Remove month">×</button>`:''}</td></tr>${expanded?`<tr class="detail-row"><td colspan="4">${detailMarkup(r,which)}</td></tr>`:''}`;};
+  return row('first','First cutoff')+row('second','Second cutoff');
+ }).join('');
+ root.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr><th>Month</th><th>Cutoff</th><th>Bills</th><th>OT hours</th></tr></thead><tbody>${rows}</tbody></table>`;
+ root.querySelectorAll('[data-remove-month]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const month=b.dataset.removeMonth;if(!confirm('Remove '+month+' and both cutoffs from this planner?'))return;monthlyHistory=monthlyHistory.filter(r=>r.month!==month);if(expandedCutoffKey?.startsWith(month+'|'))expandedCutoffKey=null;saveMonthlyHistoryData();renderMonthlyHistory();}));
+ root.querySelectorAll('[data-toggle-cutoff]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();expandedCutoffKey=expandedCutoffKey===b.dataset.toggleCutoff?null:b.dataset.toggleCutoff;renderMonthlyHistory();}));
+ root.querySelectorAll('[data-open-cutoff]').forEach(row=>row.addEventListener('click',e=>{if(e.target.closest('button'))return;expandedCutoffKey=expandedCutoffKey===row.dataset.openCutoff?null:row.dataset.openCutoff;renderMonthlyHistory();}));
+ root.querySelectorAll('[data-edit-bills]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const [month,which]=b.dataset.editBills.split('|'),record=monthlyHistory.find(x=>x.month===month);if(!record)return;activeRecordEdit={month,which};renderBillPicker(which==='first'?'15':'eom',record);}));
+ root.querySelectorAll('[data-day-pick]').forEach(btn=>btn.addEventListener('click',()=>{
+  const [month,which,date]=btn.dataset.dayPick.split('|'),dialog=root.querySelector(`[data-day-dialog="${month}|${which}"]`),record=monthlyHistory.find(x=>x.month===month),x=record?.[which];if(!dialog||!x)return;
+  dialog.dataset.selectedDate=date;dialog.querySelector('[data-dialog-date]').textContent=new Date(date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const existing=(x.otEntries||[]).find(e=>e.date===date),absent=(x.absenceDates||[]).includes(date);
+  dialog.dataset.attendance=absent?'no':'yes';dialog.querySelector('[data-dialog-ot]').hidden=absent;
+  dialog.querySelector('[data-dialog-ot-slider]').value=existing?.hours||0;
+  dialog.querySelector('[data-dialog-ot-label]').textContent=(existing?.hours||0)+' hours';
+  updateNightPreview(dialog,Number(existing?.hours)||0);
+  dialog.showModal();
+ }));
+ root.querySelectorAll('[data-holiday-detail]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const panel=btn.closest('.record-detail')?.querySelector('[data-record-holiday-info]');if(panel){const date=btn.dataset.holidayDetail;panel.innerHTML=holidayInfoMarkup(holidayForDate(date),date);panel.hidden=false;}}));
+ root.querySelectorAll('[data-work-yes]').forEach(btn=>btn.addEventListener('click',()=>{const d=btn.closest('dialog');d.dataset.attendance='yes';d.querySelector('[data-dialog-ot]').hidden=false;}));
+ root.querySelectorAll('[data-work-no]').forEach(btn=>btn.addEventListener('click',()=>{const d=btn.closest('dialog');d.dataset.attendance='no';d.querySelector('[data-dialog-ot]').hidden=true;}));
+ root.querySelectorAll('[data-dialog-close]').forEach(btn=>btn.addEventListener('click',()=>btn.closest('dialog').close()));
+ root.querySelectorAll('[data-dialog-ot-slider]').forEach(el=>el.addEventListener('input',()=>{const d=el.closest('dialog');d.querySelector('[data-dialog-ot-label]').textContent=el.value+' hours';updateNightPreview(d,Number(el.value));}));
+ root.querySelectorAll('[data-dialog-save]').forEach(btn=>btn.addEventListener('click',()=>{
+  const d=btn.closest('dialog'),date=d.dataset.selectedDate,att=d.dataset.attendance, [month,which]=d.dataset.dayDialog.split('|'),r=monthlyHistory.find(x=>x.month===month);if(!r||!date)return;
+  const x=r[which];x.otEntries=x.otEntries||[];x.absenceDates=x.absenceDates||[];x.otEntries=x.otEntries.filter(e=>e.date!==date);x.absenceDates=x.absenceDates.filter(v=>v!==date);
+  if(att==='no')x.absenceDates.push(date);else{const hours=Number(d.querySelector('[data-dialog-ot-slider]').value)||0;const night=nightHoursForOt(hours);x.otEntries.push({date,hours,night,shiftNight:scheduledNightHours()});}
+  d.close();recalcSavedRecord(r);saveMonthlyHistoryData();renderMonthlyHistory();
+ }));
+ root.querySelectorAll('[data-remove-ot]').forEach(btn=>btn.addEventListener('click',()=>{const [month,which,i]=btn.dataset.removeOt.split('|'),r=monthlyHistory.find(x=>x.month===month);if(!r)return;r[which].otEntries.splice(Number(i),1);recalcSavedRecord(r);saveMonthlyHistoryData();renderMonthlyHistory();}));
+ root.querySelectorAll('[data-remove-absence]').forEach(btn=>btn.addEventListener('click',()=>{const [month,which,i]=btn.dataset.removeAbsence.split('|'),r=monthlyHistory.find(x=>x.month===month);if(!r)return;r[which].absenceDates.splice(Number(i),1);recalcSavedRecord(r);saveMonthlyHistoryData();renderMonthlyHistory();}));
+}
+function saveMonthlyHistoryData(){localStorage.setItem('emersonMonthlyHistory',JSON.stringify(monthlyHistory));if(window.__emersonQueueCloudSync)window.__emersonQueueCloudSync();}
+function monthKeyAdd(m,n){const [y,mo]=m.split('-').map(Number);const d=new Date(y,mo-1+n,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function currentMonthKey(){return new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).slice(0,7);}
+function addMonthRecord(month){if(monthlyHistory.some(x=>x.month===month))return false;const previous=[...monthlyHistory].sort((a,b)=>a.month.localeCompare(b.month)).slice(-1)[0];let first,second;if(previous){first={...JSON.parse(JSON.stringify(previous.first)),holiday:holidayPayByCutoff(month).p15};second={...JSON.parse(JSON.stringify(previous.second)),holiday:holidayPayByCutoff(month).eom};}else{first=currentCutoffPlan('15',month);second=currentCutoffPlan('eom',month);}const record={month,first,second,savedAt:new Date().toISOString()};recalcSavedRecord(record);monthlyHistory.push(record);saveMonthlyHistoryData();renderMonthlyHistory();return true;}
+function ensureRollingMonths(){const start=currentMonthKey();for(let i=0;i<5;i++)addMonthRecord(monthKeyAdd(start,i));}
+get('addHistoryMonth').addEventListener('click',()=>{const sorted=[...monthlyHistory].sort((a,b)=>a.month.localeCompare(b.month));const next=sorted.length?monthKeyAdd(sorted[sorted.length-1].month,1):currentMonthKey();if(addMonthRecord(next))get('monthlyHistoryStatus').textContent=monthLabel(next)+' added.';else get('monthlyHistoryStatus').textContent='That month is already in the history.';});
+function refreshSavedMonthEstimates(){monthlyHistory.forEach(r=>{if(!r.first||!r.second)return;['first','second'].forEach(k=>{const x=r[k];x.holiday=holidayPayByCutoff(r.month)[k==='first'?'p15':'eom'];});recalcSavedRecord(r);});saveMonthlyHistoryData();renderMonthlyHistory();}
+
+let holidayWorkEntries=[];
+function holidayTypeForDate(date){for(const year of [2026,2027]){const found=(holidayData[year]||[]).find(x=>x[0]===date);if(found)return found[2];}return 'Ordinary working day';}
+function holidayPremiumForEntry(entry){
+ const hourly=basicPay()/(22*8),hours=Number(entry.hours)||0,first=Math.min(hours,8),ot=Math.max(0,hours-8),night=Math.min(hours,Number(entry.night)||0),type=holidayTypeForDate(entry.date),rest=!!entry.rest;
+ let firstRate=0,otRate=0;
+ if(type==='Regular holiday'){firstRate=rest?1.6:1;otRate=rest?3.38:2.6;}
+ else if(type==='Special non-working day'||type==='Additional special non-working day'){firstRate=rest ? 0.5 : 0.3;otRate=rest?1.95:1.69;}
+ const premium=hourly*first*firstRate+hourly*ot*otRate;
+ const nightDiff=hourly*night*.10*(night<=first?firstRate:otRate);
+ return {premium:premium+nightDiff,type,firstRate,otRate,first,ot,nightDiff};
+}
+function holidayEntriesForMonth(month){
+ const selected=[...document.querySelectorAll('.workday:checked')].map(x=>Number(x.value));
+ const hours=Math.max(1,Math.min(12,Number(get('holidayHoursPerDay')?.value)||8)),night=Math.max(0,Math.min(hours,Number(get('holidayNightPerDay')?.value)||0));
+ if(!get('assumeHolidayWorked')?.checked)return [];
+ return Object.values(holidayData).flat().filter(([date,name,type])=>date&&date.startsWith(month)&&['Regular holiday','Special non-working day','Additional special non-working day'].includes(type)&&selected.includes(new Date(date+'T00:00:00').getDay())).map(([date,name])=>({date,name,hours,night,rest:false,auto:true}));
+}
+function holidayPayByCutoff(month){
+ month=month||new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).slice(0,7);
+ let p15=0,eom=0,total=0;holidayEntriesForMonth(month).forEach(e=>{const x=holidayPremiumForEntry(e);total+=x.premium;const day=Number(e.date.slice(8,10));if(day>=16)p15+=x.premium;else eom+=x.premium;});return {p15,eom,total};
+}
+function rebuildAutoHolidayEntries(){const m=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Manila'}).slice(0,7);holidayWorkEntries=holidayEntriesForMonth(m);}
+function renderHolidayWorkEntries(){/* holiday dates are applied silently to each month and cutoff */}
+document.querySelectorAll('.workday,#holidayHoursPerDay,#holidayNightPerDay,#assumeHolidayWorked').forEach(el=>el.addEventListener('change',()=>{rebuildAutoHolidayEntries();calculate();refreshSavedMonthEstimates();}));
+const holidayData={
+2026:[['2026-01-01',"New Year's Day",'Regular holiday'],['2026-02-17','Chinese New Year','Special non-working day'],['2026-02-25','EDSA People Power Revolution Anniversary','Special working day'],['2026-04-02','Maundy Thursday','Regular holiday'],['2026-04-03','Good Friday','Regular holiday'],['2026-04-04','Black Saturday','Additional special non-working day'],['2026-04-09','Araw ng Kagitingan','Regular holiday'],['2026-05-01','Labor Day','Regular holiday'],['2026-06-12','Independence Day','Regular holiday'],['2026-08-21','Ninoy Aquino Day','Special non-working day'],['2026-08-31',"National Heroes' Day",'Regular holiday'],['2026-11-01',"All Saints' Day",'Special non-working day'],['2026-11-02',"All Souls' Day",'Additional special non-working day'],['2026-11-30','Bonifacio Day','Regular holiday'],['2026-12-08','Feast of the Immaculate Conception of Mary','Special non-working day'],['2026-12-24','Christmas Eve','Additional special non-working day'],['2026-12-25','Christmas Day','Regular holiday'],['2026-12-30','Rizal Day','Regular holiday'],['2026-12-31','Last Day of the Year','Special non-working day'],['2026-03-20','Eid’l Fitr','Regular holiday'],['2026-05-27','Eid’l Adha','Regular holiday']],
+2027:[['2027-01-01',"New Year's Day",'Regular holiday'],['2027-02-06','Chinese New Year','Additional special non-working day'],['2027-02-25','EDSA People Power Revolution Anniversary','Special working day'],['2027-03-25','Maundy Thursday','Regular holiday'],['2027-03-26','Good Friday','Regular holiday'],['2027-03-27','Black Saturday','Additional special non-working day'],['2027-04-09','Araw ng Kagitingan','Regular holiday'],['2027-05-01','Labor Day','Regular holiday'],['2027-06-12','Independence Day','Regular holiday'],['2027-08-21','Ninoy Aquino Day','Special non-working day'],['2027-08-30',"National Heroes' Day",'Regular holiday'],['2027-11-01',"All Saints' Day",'Special non-working day'],['2027-11-02',"All Souls' Day",'Additional special non-working day'],['2027-11-30','Bonifacio Day','Regular holiday'],['2027-12-08','Feast of the Immaculate Conception of Mary','Special non-working day'],['2027-12-24','Christmas Eve','Additional special non-working day'],['2027-12-25','Christmas Day','Regular holiday'],['2027-12-30','Rizal Day','Regular holiday'],['2027-12-31','Last Day of the Year','Special non-working day'],['','Eid’l Fitr','Regular holiday · date to be announced'],['','Eid’l Adha','Regular holiday · date to be announced']]
+};
+function holidayForDate(date){return Object.values(holidayData).flat().find(h=>h[0]===date)||null;}
+function holidayInfoMarkup(h,date){return h?`<b>${h[1]}</b><span>${h[2]}</span><div>${new Date(date+'T12:00:00').toLocaleDateString('en-PH',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</div>`:`<b>No listed holiday</b><span>${date}</span>`;}
+function renderPayCalendar(){
+ const m=get('payCalendarMonth')?.value||currentMonthKey(),root=get('payCalendar');if(!root)return;
+ const [yy,mm]=m.split('-').map(Number),days=new Date(yy,mm,0).getDate(),first=new Date(yy,mm-1,1);
+ const hols=Object.values(holidayData).flat().filter(h=>h[0]&&h[0].startsWith(m)),byDay={};hols.forEach(h=>byDay[Number(h[0].slice(8,10))]=h);
+ let cells='';for(let i=0;i<first.getDay();i++)cells+='<div></div>';
+ for(let d=1;d<=days;d++){
+  const date=m+'-'+String(d).padStart(2,'0'),holiday=byDay[d],dow=new Date(yy,mm-1,d).getDay(),work=[...document.querySelectorAll('.workday:checked')].some(x=>Number(x.value)===dow);
+  let cls='calendar-workday',label='Workday';
+  if(holiday){cls=holiday[2]==='Regular holiday'?'calendar-regular':'calendar-special';label=holiday[2].includes('Regular')?'Regular holiday':'Special holiday';}
+  else if(!work){cls='calendar-rest';label='Rest day';}
+  cells+=`<button type="button" class="calendar-cell holiday-tap ${cls}" data-holiday-date="${date}" title="${date} · ${label}"><b>${d}</b><small>${label}</small></button>`;
+ }
+ root.innerHTML=`<div class="calendar-legend"><span><i class="legend-dot calendar-workday"></i> Workday</span><span><i class="legend-dot calendar-rest"></i> Rest day</span><span><i class="legend-dot calendar-regular"></i> Regular holiday</span><span><i class="legend-dot calendar-special"></i> Special holiday</span></div><div class="calendar-grid">${['S','M','T','W','T','F','S'].map(x=>`<b class="calendar-weekday">${x}</b>`).join('')}${cells}</div>`;
+ root.querySelectorAll('[data-holiday-date]').forEach(btn=>btn.addEventListener('click',()=>{const info=get('payHolidayInfo'),h=holidayForDate(btn.dataset.holidayDate);info.innerHTML=holidayInfoMarkup(h,btn.dataset.holidayDate);info.hidden=false;}));
+ const basic=basicPay(),rice=1167,sss=Math.min(1750,basic*.05),ph=basic*.025,pi=basic>1500?200:basic*.02,base=Math.max(0,basic+rice-sss-ph-pi-taxForAnnual(Math.max(0,basic+rice-sss-ph-pi)*12)/12);
+ const maxOT=3*3*4.333*(basic/(22*8))*1.25+3*4.333*410,taxMax=taxForAnnual(Math.max(0,basic+rice+maxOT-sss-ph-pi)*12)/12;
+ get('minimumPay').textContent=fmt(base);get('maximumPay').textContent=fmt(Math.max(base,basic+rice+maxOT-sss-ph-pi-taxMax));
+}
+get('payCalendarMonth')?.addEventListener('change',renderPayCalendar);
+try{monthlyHistory=JSON.parse(localStorage.getItem('emersonMonthlyHistory')||'[]')||[];}catch(e){monthlyHistory=[];}
+// Existing history is loaded here; rolling months are seeded after saved planner settings are restored.
+function state(){let s={};ids.forEach(id=>s[id]=get(id).type==='checkbox'?get(id).checked:get(id).value);expenseDefs.forEach(([id])=>s[id+'Cutoff']=get(id+'Cutoff').value);s.workdays=[...document.querySelectorAll('.workday')].map(x=>({day:x.value,checked:x.checked}));s.holidayHoursPerDay=get('holidayHoursPerDay').value;s.holidayNightPerDay=get('holidayNightPerDay').value;s.assumeHolidayWorked=get('assumeHolidayWorked').checked;return s}
+function applyState(s){ids.forEach(id=>{if(s[id]!==undefined){if(get(id).type==='checkbox')get(id).checked=!!s[id];else get(id).value=s[id]}});expenseDefs.forEach(([id])=>{if(s[id+'Cutoff'])get(id+'Cutoff').value=s[id+'Cutoff']});if(s.baseHoursWeek&&get('baseHoursWeek'))get('baseHoursWeek').value=s.baseHoursWeek;if(Array.isArray(s.workdays))s.workdays.forEach(w=>{const el=document.querySelector('.workday[value=\"'+w.day+'\"]');if(el)el.checked=!!w.checked});if(s.holidayHoursPerDay)get('holidayHoursPerDay').value=s.holidayHoursPerDay;if(s.holidayNightPerDay)get('holidayNightPerDay').value=s.holidayNightPerDay;if(s.assumeHolidayWorked!==undefined)get('assumeHolidayWorked').checked=!!s.assumeHolidayWorked;rebuildAutoHolidayEntries();calculate()}
+ids.forEach(id=>{get(id).addEventListener('input',calculate);get(id).addEventListener('change',calculate)});get('basicSalary').addEventListener('input',()=>{calculate();refreshSavedMonthEstimates();renderPayCalendar()});get('workPosition').addEventListener('input',()=>{calculate();});expenseDefs.forEach(([id])=>get(id+'Cutoff').addEventListener('change',calculate));
+get('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('emersonSalaryPlanner',JSON.stringify(state()));get('saveStatus').textContent='Saved on this device. Open this app in the same browser to restore it.'}catch(e){get('saveStatus').textContent='Could not save on this browser. Please keep a note of your settings.'}});
+get('resetBtn').addEventListener('click',()=>{const s={employmentStatus:'probi',ot:0,night:0,otdays:0,savings:0,investment:5000,jowa:3000,house:5000,mama:10000,utilities:1500,food:6000,transport:1500,wifi:1000,personal:2000,other:1000};expenseDefs.forEach(([id])=>s[id+'Cutoff']='eom');applyState(s);get('saveStatus').textContent='Baseline restored. Press Save to keep these settings.'});
+
+try{const saved=localStorage.getItem('emersonSalaryPlanner');if(saved)applyState(JSON.parse(saved));else {rebuildAutoHolidayEntries();calculate()}}catch(e){rebuildAutoHolidayEntries();calculate()}
+
+refreshSavedMonthEstimates();
+renderPayCalendar();
+
+document.querySelectorAll('.tabbtn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tabbtn').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.tabpage').forEach(page=>page.classList.toggle('active',page.id===btn.dataset.tab));window.scrollTo({top:0,behavior:'smooth'});}));
+// Editable custom budget rows. Existing payroll-linked benefits remain calculated automatically.
+const customBenefitsRoot=get('customBenefits');let customBenefits=[];try{customBenefits=JSON.parse(localStorage.getItem('payPlannerCustomBenefits')||'[]')||[]}catch(e){customBenefits=[]}
+function renderCustomBenefits(){customBenefitsRoot.innerHTML=customBenefits.map((b,i)=>`<div class="benefit-editor-row"><div><b>${escapeText(b.name)}</b><small>${fmt(Number(b.amount)||0)}${b.frequency?' · '+escapeText(b.frequency):''}</small></div><div class="expense-actions"><button type="button" data-benefit-edit="${i}">Edit</button><button type="button" data-benefit-delete="${i}">−</button></div></div>`).join('')||'<p class="sub">No additional benefits added.</p>';localStorage.setItem('payPlannerCustomBenefits',JSON.stringify(customBenefits));}
+function escapeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+get('addBenefit')?.addEventListener('click',()=>{const name=prompt('Benefit name:');if(!name?.trim())return;const amount=Number(prompt('Amount in PHP:', '0'));if(!Number.isFinite(amount)||amount<0)return;const frequency=prompt('Frequency (e.g. Monthly, Annual, One-time):','Monthly')||'Monthly';customBenefits.push({name:name.trim(),amount,frequency});renderCustomBenefits();});
+customBenefitsRoot?.addEventListener('click',e=>{const edit=e.target.closest('[data-benefit-edit]'),del=e.target.closest('[data-benefit-delete]');if(edit){const i=Number(edit.dataset.benefitEdit),b=customBenefits[i];const name=prompt('Benefit name:',b.name);if(!name?.trim())return;const amount=Number(prompt('Amount in PHP:',String(b.amount)));if(!Number.isFinite(amount)||amount<0)return;const frequency=prompt('Frequency:',b.frequency||'Monthly')||'';customBenefits[i]={name:name.trim(),amount,frequency};renderCustomBenefits();}if(del){customBenefits.splice(Number(del.dataset.benefitDelete),1);renderCustomBenefits();}});renderCustomBenefits();
+get('addExpense')?.addEventListener('click',()=>{const label=prompt('Expense name:');if(!label?.trim())return;const amount=Number(prompt('Monthly amount in PHP:','0'));if(!Number.isFinite(amount)||amount<0)return;const id='customExpense'+Date.now();const newDef=[id,label.trim(),amount,50000,100];expenseDefs.push(newDef);customExpenseDefs.push(newDef);localStorage.setItem('payPlannerCustomExpenseDefs',JSON.stringify(customExpenseDefs));ids.push(id);const row=document.createElement('div');row.className='expense-row';row.dataset.expenseRow=id;row.innerHTML=`<div class="fieldhead"><label for="${id}">${escapeText(label.trim())}</label><span class="val" id="${id}Val">${fmt(amount)}</span><div class="expense-actions"><button type="button" data-edit-expense="${id}">Edit</button><button type="button" data-delete-expense="${id}">−</button></div></div><input id="${id}" type="range" min="0" max="50000" step="100" value="${amount}"><div class="ends"><span>₱0</span><span>₱50,000</span></div><input type="hidden" id="${id}Cutoff" value="eom">`;expenseRoot.appendChild(row);get(id).addEventListener('input',calculate);get(id).addEventListener('change',calculate);get(id+'Cutoff').addEventListener('change',calculate);calculate();});
+expenseRoot.addEventListener('click',e=>{const edit=e.target.closest('[data-edit-expense]'),del=e.target.closest('[data-delete-expense]');if(edit){const id=edit.dataset.editExpense,def=expenseDefs.find(x=>x[0]===id),label=prompt('Expense name:',def[1].replace(/^\d+\. /,''));if(!label?.trim())return;def[1]=label.trim();const amount=Number(prompt('Monthly amount in PHP:',get(id).value));if(!Number.isFinite(amount)||amount<0)return;get(id).value=amount;get(id).max=Math.max(Number(get(id).max),amount);def[2]=amount;def[1]=label.trim();if(customExpenseDefs.some(x=>x[0]===id))localStorage.setItem('payPlannerCustomExpenseDefs',JSON.stringify(customExpenseDefs));renderExpenseLabel(id,label.trim());calculate();}if(del){const id=del.dataset.deleteExpense;if(!confirm('Remove this expense?'))return;const index=expenseDefs.findIndex(x=>x[0]===id);if(index>=0)expenseDefs.splice(index,1);customExpenseDefs=customExpenseDefs.filter(x=>x[0]!==id);localStorage.setItem('payPlannerCustomExpenseDefs',JSON.stringify(customExpenseDefs));const idIndex=ids.indexOf(id);if(idIndex>=0)ids.splice(idIndex,1);get(id)?.closest('.expense-row')?.remove();calculate();}});
+function renderExpenseLabel(id,label){const row=get(id)?.closest('.expense-row');if(row){row.querySelector('label').textContent=label;row.querySelector('.ends span:last-child').textContent=fmt(Number(get(id).max));}}
+
+function sizeStickyHeader(){const shell=document.querySelector('.sticky-shell');if(shell)document.documentElement.style.setProperty('--sticky-height',shell.offsetHeight+'px')}window.addEventListener('load',sizeStickyHeader);window.addEventListener('resize',sizeStickyHeader);if('ResizeObserver' in window){const shell=document.querySelector('.sticky-shell');if(shell)new ResizeObserver(sizeStickyHeader).observe(shell)}if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>{
+  reg.update().catch(()=>{});
+  if(reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
+  reg.addEventListener('updatefound',()=>{
+    const worker=reg.installing;
+    if(worker)worker.addEventListener('statechange',()=>{
+      if(worker.state==='installed' && navigator.serviceWorker.controller){
+        worker.postMessage({type:'SKIP_WAITING'});
+      }
+    });
+  });
+}).catch(err=>console.warn('Service worker registration failed',err)));
+</script>
+
+<style>
+#cloudAuthGate{position:fixed;inset:0;z-index:99999;background:rgba(9,18,15,.94);display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit}
+#cloudAuthCard{width:min(440px,100%);background:#fff;color:#18231f;border-radius:18px;padding:24px;box-shadow:0 20px 70px #0008}
+#cloudAuthCard h2{margin:0 0 6px;font-size:23px}
+#cloudAuthCard p{color:#68746e;margin:0 0 18px}
+#cloudAuthCard label{display:block;font-size:13px;font-weight:650;margin:12px 0 5px}
+#cloudAuthCard input{width:100%;padding:12px;border:1px solid #ccd6cf;border-radius:9px;font-size:16px}
+#cloudAuthActions{display:flex;gap:9px;margin-top:16px}
+#cloudAuthActions button{flex:1;border:0;border-radius:9px;padding:12px;font-weight:700;cursor:pointer}
+#cloudSignIn{background:#176b4d;color:white}#cloudSignUp{background:#e7f4ed;color:#176b4d}
+#cloudAuthMsg{font-size:13px;min-height:20px;margin-top:12px;color:#b33b3b}
+#cloudAccountBar{display:none;position:fixed;right:12px;bottom:12px;z-index:9000;background:#12231f;color:#fff;border-radius:12px;padding:9px 12px;box-shadow:0 5px 20px #0003;font-size:12px;align-items:center;gap:9px}
+#cloudAccountBar button{border:1px solid #ffffff55;background:transparent;color:white;border-radius:7px;padding:5px 8px}
+#cloudSyncStatus{opacity:.8}
+.daily-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 9px;padding:8px;background:#f8faf8;border-radius:10px}.daily-editor .field{margin:3px 0}.daily-editor label{font-size:11px!important}.daily-editor input[type=date],.daily-editor select,.daily-editor input[type=number]{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px;font:12px inherit;background:#fff;color:var(--ink)}.daily-editor [data-work-controls]{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}.daily-editor [data-save-day]{grid-column:1/-1;padding:7px 10px;font-size:11px}.pay-computation{margin-top:10px;border-top:1px solid var(--line);padding-top:7px}.pay-computation summary{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}.pay-computation[open]{padding-bottom:5px}@media(max-width:520px){.daily-editor{grid-template-columns:1fr}.daily-editor [data-work-controls]{grid-template-columns:1fr 1fr}}
+.attendance-day{min-width:0;padding:6px 2px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px}
+.attendance-day small{font-size:8px;color:var(--muted);white-space:nowrap}
+.attendance-day.worked{border-color:#7ba88b;background:#edf7f0}.attendance-day.absent{border-color:#d49a9a;background:#fff0f0}
+.attendance-dialog{border:0;border-radius:14px;padding:16px;width:min(92vw,380px);box-shadow:0 18px 55px #0003}
+.attendance-dialog::backdrop{background:#17251fcc}
+.attendance-dialog .btnrow{display:flex;gap:8px;flex-wrap:wrap}.attendance-dialog button{font-size:12px;padding:8px 10px}
+@media(max-width:420px){.attendance-day{padding:5px 0}.attendance-day small{font-size:7px}}
+
+
+.tabpage{display:none!important}.tabpage.active{display:block!important}
+.sticky-shell{position:sticky!important;top:0!important}
+.tabbar{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-width:1100px;width:calc(100% - 28px);margin:10px auto 0;padding:0 0 10px}
+.tabbar .tabbtn{min-width:0;white-space:normal;line-height:1.2;font-size:12px;padding:10px 8px;border-radius:10px}
+@media(max-width:520px){.tabbar{gap:4px;width:calc(100% - 16px)}.tabbar .tabbtn{font-size:10px;padding:8px 4px}}
+
+#cloudAccountBar{position:static!important;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;margin:16px auto 12px;text-align:center;width:min(1100px,calc(100% - 28px));background:transparent!important;color:var(--muted)!important;box-shadow:none!important;border:0!important;border-radius:0!important;padding:8px 0!important;font-size:10px!important}
+#cloudAccountBar button{color:var(--ink)!important;border:1px solid var(--line)!important}
+#cloudSyncStatus{opacity:1!important}
+
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-cell{min-height:62px;border-radius:9px;padding:6px 3px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:center;border:1px solid transparent}
+.calendar-cell b{font-size:13px}.calendar-cell small{font-size:8px;line-height:1.1}
+.calendar-workday{background:#e9f2ff;border-color:#b7cdee;color:#294d79}
+.calendar-rest{background:#f0f1f2;border-color:#d9dcdf;color:#69717a}
+.calendar-regular{background:#ffebeb;border-color:#edb8b8;color:#963b3b}
+.calendar-special{background:#fff3d9;border-color:#efd39a;color:#8a6217}
+.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;font-size:10px}
+.calendar-legend span{display:flex;align-items:center;gap:5px}
+.legend-dot{width:11px;height:11px;border-radius:3px;display:inline-block;border:1px solid #0001}
+@media(max-width:520px){.calendar-cell{min-height:48px}.calendar-cell small{font-size:7px}}
+
+.remove-month{float:right;border:0;background:transparent;color:var(--red);font-size:16px;padding:0 5px;line-height:1}
+
+.estimate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.estimate-card{min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.estimate-card .tag{display:block;font-size:9px;line-height:1.25;white-space:normal}
+.estimate-card strong{display:block;font-size:17px;line-height:1.25;margin-top:5px;overflow-wrap:anywhere}
+@media(max-width:420px){.estimate-card{padding:7px}.estimate-card strong{font-size:15px}.estimate-card .tag{font-size:8px}}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}.section-head .sub{margin:0;flex:1}.small-action{padding:6px 10px!important;font-size:11px!important;white-space:nowrap;border-radius:8px!important}.expense-row{position:relative;border-bottom:1px solid var(--line);padding:7px 0 9px}.expense-row .fieldhead{gap:8px}.expense-actions{display:flex;gap:5px;align-items:center}.expense-actions button{font-size:10px;padding:4px 7px}.benefit-editor-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}.benefit-editor-row small{display:block;color:var(--muted);font-size:10px}.benefit-editor-row button{font-size:10px;padding:4px 7px}.tabbar{margin:0 auto!important;padding:5px 0 7px!important}.content-main{padding-top:3px!important;padding-bottom:76px!important}.tabpage>.widepanel{margin-top:3px!important}.sticky-shell{position:sticky!important;top:0!important;z-index:1000!important;background:var(--bg)!important;box-shadow:0 3px 10px #0000000a}.calendar-legend{margin:6px 0 9px!important}.attendance-calendar{margin-top:2px}
+#cloudAccountBar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9500!important;display:flex;gap:8px!important;justify-content:center!important;align-items:center!important;text-align:center!important;width:100%!important;margin:0!important;padding:8px 12px calc(8px + env(safe-area-inset-bottom))!important;background:var(--card)!important;border-top:1px solid var(--line)!important;box-shadow:0 -3px 14px #00000012!important;color:var(--muted)!important;border-radius:0!important}
+@media(max-width:520px){.tabbar .tabbtn{font-size:9px!important;padding:8px 3px!important}.content-main{padding-top:4px!important}.section-head{align-items:flex-start}}
+
+</style>
+<div id="cloudAuthGate">
+ <div id="cloudAuthCard">
+  <h2>Pay & Budget Planner</h2>
+  <p>Sign in to sync your planner across PC and iPhone.</p>
+  <label for="cloudEmail">Email address</label>
+  <input id="cloudEmail" type="email" autocomplete="email" placeholder="you@example.com">
+  <label for="cloudPassword">Password</label>
+  <input id="cloudPassword" type="password" autocomplete="current-password" placeholder="At least 8 characters">
+  <div id="cloudAuthActions">
+   <button id="cloudSignIn" type="button">Sign in</button>
+   <button id="cloudSignUp" type="button">Create account</button>
+  </div>
+  <div id="cloudAuthMsg">Your planner data is private to your account.</div>
+ </div>
+</div>
+<div id="cloudAccountBar"><span id="cloudSyncStatus">Cloud sync ready</span><span id="cloudUserEmail"></span><button id="cloudSignOut" type="button">Sign out</button></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+ const SUPABASE_URL = "https://tkqgqwhjqidkprzqpcdc.supabase.co";
+ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jBldoZA2KNt6SkEojsDuAg_aNjlqc79";
+ const gate = document.getElementById('cloudAuthGate');
+ const msg = document.getElementById('cloudAuthMsg');
+ const syncLabel = document.getElementById('cloudSyncStatus');
+ const bar = document.getElementById('cloudAccountBar');
+ const emailLabel = document.getElementById('cloudUserEmail');
+ let client, currentUser=null, syncing=false, remoteApplying=false, syncTimer=null, channel=null;
+ const STORAGE_KEYS=['emersonSalaryPlanner','emersonMonthlyHistory'];
+ const originalSet=Storage.prototype.setItem;
+ function setStatus(t){syncLabel.textContent=t;}
+ function localPayload(){
+   let planner={}, history=[];
+   try{
+     // `state()` is declared by the planner's main script and returns the
+     // current values of all sliders, selects, checkboxes and cutoff settings.
+     planner=typeof state==='function' ? state() : JSON.parse(localStorage.getItem('emersonSalaryPlanner')||'{}');
+   }catch(e){
+     console.error('Could not read live planner state',e);
+     try{planner=JSON.parse(localStorage.getItem('emersonSalaryPlanner')||'{}')}catch(_){}
+   }
+   try{history=JSON.parse(localStorage.getItem('emersonMonthlyHistory')||'[]')}catch(e){}
+   return {planner,history,version:24};
+ }
+ let pendingSync=false;
+ async function pushCloud(){
+   if(!currentUser||remoteApplying)return;
+   if(syncing){pendingSync=true;return;}
+   syncing=true; setStatus('Syncing…');
+   try{
+     const payload=localPayload();
+     const writeAt=new Date().toISOString();window.__lastCloudWriteAt=writeAt;
+     const {error}=await client.from('planner_data').upsert({
+       user_id:currentUser.id, planner_state:payload, updated_at:writeAt
+     },{onConflict:'user_id'});
+     if(error)throw error;
+     setStatus('Synced');
+   }catch(e){console.error('Cloud sync failed',e);setStatus('Sync issue: '+(e.message||'check connection'));}
+   finally{
+     syncing=false;
+     if(pendingSync){pendingSync=false;clearTimeout(syncTimer);syncTimer=setTimeout(pushCloud,250);}
+   }
+ }
+ function schedulePush(){
+   if(!currentUser||remoteApplying)return;
+   clearTimeout(syncTimer);syncTimer=setTimeout(pushCloud,500);
+ }
+ window.__emersonQueueCloudSync=schedulePush;
+  window.addEventListener('online',()=>{if(currentUser){setStatus('Back online · syncing…');schedulePush();}});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden && currentUser){schedulePush();}});
+
+ // Capture real planner edits directly. This is the reliable trigger for cloud
+ // writes; localStorage remains the offline cache, not the only sync signal.
+ let directCaptureTimer=null;
+ function captureLivePlannerChange(){
+   if(!currentUser || remoteApplying)return;
+   clearTimeout(directCaptureTimer);
+   directCaptureTimer=setTimeout(()=>{
+     try{
+       if(typeof state==='function'){
+         const liveState=state();
+         originalSet.call(localStorage,'emersonSalaryPlanner',JSON.stringify(liveState));
+       }
+       setStatus('Changes detected · syncing…');
+       schedulePush();
+     }catch(e){
+       console.error('Planner change capture failed',e);
+       setStatus('Sync issue: '+(e.message||'could not capture planner changes'));
+     }
+   },450);
+ }
+ document.addEventListener('input',e=>{
+   if(e.target && e.target.matches('input,select,textarea'))captureLivePlannerChange();
+ },true);
+ document.addEventListener('change',e=>{
+   if(e.target && e.target.matches('input,select,textarea'))captureLivePlannerChange();
+ },true);
+
+ Storage.prototype.setItem=function(k,v){
+   originalSet.call(this,k,v);
+   if(STORAGE_KEYS.includes(k))schedulePush();
+ };
+ async function pullCloud(){
+   const {data,error}=await client.from('planner_data').select('planner_state,updated_at').eq('user_id',currentUser.id).maybeSingle();
+   if(error)throw error;
+   if(data && data.planner_state){
+     remoteApplying=true;
+     const p=data.planner_state;
+     try{
+       if(p.planner)localStorage.setItem('emersonSalaryPlanner',JSON.stringify(p.planner));
+       if(Array.isArray(p.history))localStorage.setItem('emersonMonthlyHistory',JSON.stringify(p.history));
+       setStatus('Loaded cloud data');
+     }finally{ /* remote guard released after UI hydration */ }
+     // Apply cloud data to the current UI without a full-page reload.
+     if(p.planner && typeof applyState==='function'){
+       window.__emersonApplyingRemote=true;
+       applyState(p.planner);
+     }
+     if(Array.isArray(p.history)){
+       monthlyHistory=p.history;
+       renderMonthlyHistory();
+     }
+     setTimeout(()=>{
+       remoteApplying=false;
+       window.__emersonApplyingRemote=false;
+     },700);
+   }else{
+     // First sign-in: migrate existing device data into the new cloud account.
+     await pushCloud();
+     setStatus('First device migrated');
+   }
+ }
+ async function startRealtime(){
+   if(channel)await client.removeChannel(channel);
+   channel=client.channel('planner-sync-'+currentUser.id)
+    .on('postgres_changes',{event:'*',schema:'public',table:'planner_data',filter:'user_id=eq.'+currentUser.id},async payload=>{
+      const p=payload.new?.planner_state;if(!p)return;
+      const incomingAt=Date.parse(payload.new?.updated_at||'');
+      const ownAt=Date.parse(window.__lastCloudWriteAt||'');
+      if(Number.isFinite(incomingAt) && Number.isFinite(ownAt) && incomingAt===ownAt)return;
+      remoteApplying=true;
+      try{
+        if(p.planner && typeof applyState==='function'){
+          window.__emersonApplyingRemote=true;
+          applyState(p.planner);
+        }
+        if(Array.isArray(p.history)){
+          monthlyHistory=p.history;
+          localStorage.setItem('emersonMonthlyHistory',JSON.stringify(p.history));
+          renderMonthlyHistory();
+        }
+        if(p.planner)localStorage.setItem('emersonSalaryPlanner',JSON.stringify(p.planner));
+        setStatus('Updated from another device');
+      }catch(e){
+        console.error('Could not apply remote planner update',e);
+        setStatus('Sync issue: '+(e.message||'could not apply cloud update'));
+      }finally{
+        setTimeout(()=>{
+          remoteApplying=false;
+          window.__emersonApplyingRemote=false;
+        },700);
+      }
+    }).subscribe();
+ }
+ async function enterApp(session){
+   currentUser=session.user;
+   emailLabel.textContent=session.user.email||'Signed in';
+   bar.style.display='flex';gate.style.display='none';
+   try{await pullCloud();await startRealtime();}
+   catch(e){console.error(e);gate.style.display='flex';bar.style.display='none';msg.textContent='Database setup needed: '+(e.message||'check SQL setup and RLS policies');}
+ }
+ async function init(){
+   if(!window.supabase){msg.textContent='Could not load the sign-in library. Check your internet connection.';return;}
+   client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+   const {data}=await client.auth.getSession();
+   if(data.session)await enterApp(data.session);
+   client.auth.onAuthStateChange(async(event,session)=>{
+     if(session && !currentUser)await enterApp(session);
+     if(!session){currentUser=null;bar.style.display='none';gate.style.display='flex';}
+   });
+ }
+ document.getElementById('cloudSignIn').addEventListener('click',async()=>{
+   msg.textContent='Signing in…';
+   const {error}=await client.auth.signInWithPassword({email:document.getElementById('cloudEmail').value.trim(),password:document.getElementById('cloudPassword').value});
+   msg.textContent=error?error.message:'Signed in. Loading planner…';
+ });
+ document.getElementById('cloudSignUp').addEventListener('click',async()=>{
+   msg.textContent='Creating account…';
+   const {data,error}=await client.auth.signUp({email:document.getElementById('cloudEmail').value.trim(),password:document.getElementById('cloudPassword').value});
+   msg.textContent=error?error.message:(data.session?'Account created. Loading planner…':'Account created. Check your email to confirm, then sign in.');
+ });
+ document.getElementById('cloudSignOut').addEventListener('click',async()=>{await client.auth.signOut();location.reload();});
+ init().catch(e=>{console.error(e);msg.textContent=e.message||'Unable to initialize cloud login.';});
+})();
+</script>
+
+<style>
+/* v32 final layout overrides */
+.sticky-shell{position:sticky!important;top:0!important;z-index:1000!important;background:var(--bg)!important;box-shadow:0 3px 10px #0000000a}
+.tabbar{margin:0 auto!important;padding:5px 0 7px!important}
+.content-main{padding-top:3px!important;padding-bottom:76px!important}
+.tabpage>.widepanel{margin-top:3px!important}
+#cloudAccountBar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:9500!important;display:flex;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;gap:8px!important;width:100%!important;margin:0!important;padding:8px 12px calc(8px + env(safe-area-inset-bottom))!important;background:var(--card)!important;border-top:1px solid var(--line)!important;box-shadow:0 -3px 14px #00000012!important;color:var(--muted)!important;border-radius:0!important;text-align:center!important}
+.columns{gap:8px!important}.panel{padding:10px!important}.accordion-panel details>summary{padding:9px 10px!important}.accordion-content{padding:8px 10px!important}.field{margin:6px 0!important}.field input,.field select{padding:8px!important}.compcard{padding:9px!important}.widepanel{padding:10px!important}.expense-row{padding:4px 0 5px!important}.benefit-editor-row{padding:5px 0!important}.section-head{margin:4px 0!important}.topline{padding-top:7px!important;padding-bottom:6px!important}.hero{padding-top:6px!important;padding-bottom:7px!important;gap:6px!important}
+.attendance-day.calendar-workday{background:#e9f2ff!important;border-color:#b7cdee!important;color:#294d79!important}.attendance-day.calendar-rest{background:#f0f1f2!important;border-color:#d9dcdf!important;color:#69717a!important}.attendance-day.calendar-regular{background:#ffebeb!important;border-color:#edb8b8!important;color:#963b3b!important}.attendance-day.calendar-special{background:#fff3d9!important;border-color:#efd39a!important;color:#8a6217!important}
+.holiday-info{margin:8px 0 2px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#f8faf8;font-size:11px}.holiday-info b{display:block;font-size:12px;margin-bottom:3px}.holiday-tap{cursor:pointer}
+@media(max-width:520px){.panel{padding:8px!important}.accordion-content{padding:6px 8px!important}.topline{gap:6px}.hero .metric strong{font-size:18px!important}}
+</style>
+</body>
+</html>
