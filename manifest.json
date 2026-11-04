@@ -1,6 +1,6 @@
 {
-  "name": "Pay & Budget Planner",
-  "short_name": "Pay Planner",
+  "name": "Salary & Budget Planner",
+  "short_name": "Salary Planner",
   "description": "Personal salary, benefits and monthly budget planner",
   "start_url": "./",
   "display": "standalone",
