@@ -21,3 +21,13 @@ FILES
 DISPLAY
 - The page uses a fixed mobile viewport and disables pinch/double-tap zoom on supported touch browsers.
 - Desktop browser zoom shortcuts may still be controlled by the browser itself.
+
+
+Version 12 Emerson benefits integration:
+- Official upon-hiring and regularization benefit catalog preloaded.
+- Residence-zone selector for approved OT transportation (Zones 1-4).
+- ₱60 OT meal + zone transportation automatically apply only when daily OT is at least 3 hours and marked supervisor-approved.
+- Perfect attendance award requires explicit monthly eligibility confirmation and calculates the higher of one day base pay (monthly basic / 22) or ₱1,200.
+- Clothing allowance accrues as ₱750 in Mar/Jun/Sep/Dec for regular employees.
+- Mid-year and 13th month pay can be marked as received for the selected payroll month.
+- Night-shift transport eligibility is manually confirmed per date; amount uses selected zone rate provisionally and should be verified with HR.
